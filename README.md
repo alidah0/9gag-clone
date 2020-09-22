@@ -2,7 +2,7 @@
 
 ## App Description
 
-Discuss Mania is full-stack social news aggregation, content rating, and discussion website. Registered members submit content to the site such as links, text posts, and images, which are then voted up or down by other members also open a private real-time chat with other members.
+Discuss Mania is full-stack social news aggregation, content rating, and discussion App. Registered members submit content to the site such as links, text posts, and images, which are then voted up or down by other members also open a private real-time chat with other members.
 
 
 ## Tech-Stack
