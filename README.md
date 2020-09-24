@@ -21,4 +21,4 @@ Discuss Mania is full-stack social news aggregation, content rating, and discuss
 
 ## Note
 
-I'm actively looking for a junior position for a while now and since back then I have tried my best to improve my skills. I've created the following project to demonstrate my skills, it was like a playground to try new things. The only thing was in my mind is to eliminate the use of any 3rd party library and refactor the code and keep it clean ASMAP, to train myself to get comfortable with these new concepts and learn new technologies like Redis.
+I'm actively looking for a junior position for a while now and since back then I have tried my best to improve my skills. I've did stuff to demonstrate my skills, it was like a playground to try new things. The only thing was in my mind is to eliminate the use of any 3rd party library and refactor the code and keep it clean ASMAP, to train myself to get comfortable with these new concepts and learn new technologies like Redis.
