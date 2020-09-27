@@ -13,7 +13,7 @@ Discuss Mania is full-stack social news aggregation, content rating, and discuss
 - Apollo
 - Node.js
 - PostgreSQL
-- ORM
+- TypeORM
 - Redis
 - TypeGraphQL
 - Next.js
