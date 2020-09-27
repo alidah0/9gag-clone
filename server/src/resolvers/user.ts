@@ -13,6 +13,14 @@ import { getConnection } from "typeorm";
 import argon2 from "argon2";
 import { MyContext } from "../types";
 
+@InputType()
+class UsernamePasswordInput {
+  @Field()
+  username: string;
+  @Field()
+  password: string;
+}
+
 @ObjectType()
 class FieldError {
   @Field()
@@ -28,14 +36,6 @@ class UserResponse {
 
   @Field(() => User, { nullable: true })
   user?: User;
-}
-
-@InputType()
-class UsernamePasswordInput {
-  @Field()
-  username: string;
-  @Field()
-  password: string;
 }
 
 @Resolver()
@@ -54,36 +54,51 @@ export class UserResolver {
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    if (options.username.length <= 2) {
+    const { username, password } = options;
+
+    if (!username || !password) {
       return {
         errors: [
           {
-            field: "username",
-            message: "length must be greater than 2",
-          },
-        ],
-      };
-    }
-    if (options.password.length <= 2) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "length must be greater than 2",
+            field: !username ? "username" : "password",
+            message: `${!username ? "username" : "password"} is required`,
           },
         ],
       };
     }
 
-    const hashedPassword = await argon2.hash(options.password);
+    if (username.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "username",
+            message: "username too shart, must be up to 3 characters",
+          },
+        ],
+      };
+    }
+
+    if (password.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "password too shart, must be up to 3 characters",
+          },
+        ],
+      };
+    }
+
+    const hashedPassword = await argon2.hash(password);
     let user;
+
     try {
       const result = await getConnection()
         .createQueryBuilder()
         .insert()
         .into(User)
         .values({
-          username: options.username,
+          username: username,
           password: hashedPassword,
         })
         .returning("*")
@@ -101,7 +116,9 @@ export class UserResolver {
         };
       }
     }
+
     req.session.userId = user.id;
+
     return { user };
   }
 
@@ -112,12 +129,23 @@ export class UserResolver {
   ): Promise<UserResponse> {
     const user = await User.findOne({ username: options.username });
 
+    if (!options.username) {
+      return {
+        errors: [
+          {
+            field: "username",
+            message: "username is required!",
+          },
+        ],
+      };
+    }
+
     if (options.username.length <= 2) {
       return {
         errors: [
           {
             field: "username",
-            message: "username too shart, bust be up to 3 characters",
+            message: "username too shart, must be up to 3 characters",
           },
         ],
       };
@@ -128,13 +156,25 @@ export class UserResolver {
         errors: [
           {
             field: "username",
-            message: "that username doesn't exist",
+            message: "username doesn't exists!",
+          },
+        ],
+      };
+    }
+
+    if (options.password.length <= 2) {
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "password too shart, must be up to 3 characters",
           },
         ],
       };
     }
 
     const valid = await argon2.verify(user.password, options.password);
+
     if (!valid) {
       return {
         errors: [
@@ -148,8 +188,6 @@ export class UserResolver {
 
     req.session.userId = user.id;
 
-    return {
-      user,
-    };
+    return { user };
   }
 }
