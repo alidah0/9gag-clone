@@ -104,16 +104,16 @@ export class UserResolver {
   ): Promise<UserResponse> {
     const user = await User.findOne(
       usernameOrEmail.includes("@")
-        ? { username: usernameOrEmail }
-        : { username: usernameOrEmail }
+        ? { where: { email: usernameOrEmail } }
+        : { where: { username: usernameOrEmail } }
     );
 
-    if (!usernameOrEmail && !usernameOrEmail.includes("@")) {
+    if (!usernameOrEmail) {
       return {
         errors: [
           {
-            field: "username",
-            message: "username is required!",
+            field: "usernameOrEmail",
+            message: "username or Email is required!",
           },
         ],
       };
@@ -123,19 +123,8 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "username",
+            field: "usernameOrEmail",
             message: "username too shart, must be up to 3 characters",
-          },
-        ],
-      };
-    }
-
-    if (!user) {
-      return {
-        errors: [
-          {
-            field: "username",
-            message: "username doesn't exists!",
           },
         ],
       };
@@ -147,6 +136,17 @@ export class UserResolver {
           {
             field: "password",
             message: "password too shart, must be up to 3 characters",
+          },
+        ],
+      };
+    }
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "usernameOrEmail",
+            message: "that username or Email doesn't exist",
           },
         ],
       };
