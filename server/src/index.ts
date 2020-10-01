@@ -10,7 +10,7 @@ import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { UserResolver } from "./resolvers/user";
 
-import redis from "redis";
+import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
@@ -28,7 +28,7 @@ const main = async () => {
   const app = express();
 
   let RedisStore = connectRedis(session);
-  let redisClient = redis.createClient();
+  let redis = new Redis();
 
   app.use(
     cors({
@@ -40,7 +40,7 @@ const main = async () => {
   app.use(
     session({
       name: COOKIE_NAME,
-      store: new RedisStore({ client: redisClient, disableTouch: true }),
+      store: new RedisStore({ client: redis, disableTouch: true }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,
@@ -57,7 +57,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
   apolloServer.applyMiddleware({
     app,
