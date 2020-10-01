@@ -3,7 +3,6 @@ import {
   Arg,
   Ctx,
   Field,
-  InputType,
   Mutation,
   ObjectType,
   Query,
@@ -12,15 +11,11 @@ import {
 import { getConnection } from "typeorm";
 import argon2 from "argon2";
 import { MyContext } from "../types";
-import { COOKIE_NAME } from "../constants";
-
-@InputType()
-class UsernamePasswordInput {
-  @Field()
-  username: string;
-  @Field()
-  password: string;
-}
+import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
+import { UsernamePasswordInput } from "./UsernamePasswordInput";
+import { validateRegister } from "../utils/validateRegister";
+import { sendEmail } from "../utils/sendEmail";
+import { v4 } from "uuid";
 
 @ObjectType()
 class FieldError {
@@ -41,6 +36,30 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { redis }: MyContext
+  ) {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      // email is not existed in the DB
+      return true;
+    }
+    const token = v4();
+    await redis.set(
+      FORGET_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24 * 3
+    );
+    await sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`
+    );
+    return true;
+  }
+
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
@@ -55,41 +74,12 @@ export class UserResolver {
     @Arg("options") options: UsernamePasswordInput,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const { username, password } = options;
-
-    if (!username || !password) {
-      return {
-        errors: [
-          {
-            field: !username ? "username" : "password",
-            message: `${!username ? "username" : "password"} is required`,
-          },
-        ],
-      };
+    const errors = validateRegister(options);
+    if (errors) {
+      return { errors };
     }
 
-    if (username.length <= 2) {
-      return {
-        errors: [
-          {
-            field: "username",
-            message: "username too shart, must be up to 3 characters",
-          },
-        ],
-      };
-    }
-
-    if (password.length <= 2) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "password too shart, must be up to 3 characters",
-          },
-        ],
-      };
-    }
-
+    const { email, password, username } = options;
     const hashedPassword = await argon2.hash(password);
     let user;
 
@@ -100,7 +90,10 @@ export class UserResolver {
         .into(User)
         .values({
           username: username,
+          email: email,
           password: hashedPassword,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         })
         .returning("*")
         .execute();
@@ -125,45 +118,39 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("options") options: UsernamePasswordInput,
+    @Arg("usernameOrEmail") usernameOrEmail: string,
+    @Arg("password") password: string,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await User.findOne({ username: options.username });
+    const user = await User.findOne(
+      usernameOrEmail.includes("@")
+        ? { where: { email: usernameOrEmail } }
+        : { where: { username: usernameOrEmail } }
+    );
 
-    if (!options.username) {
+    if (!usernameOrEmail) {
       return {
         errors: [
           {
-            field: "username",
-            message: "username is required!",
+            field: "usernameOrEmail",
+            message: "username or Email is required!",
           },
         ],
       };
     }
 
-    if (options.username.length <= 2) {
+    if (!usernameOrEmail.includes("@") && usernameOrEmail.length <= 2) {
       return {
         errors: [
           {
-            field: "username",
+            field: "usernameOrEmail",
             message: "username too shart, must be up to 3 characters",
           },
         ],
       };
     }
 
-    if (!user) {
-      return {
-        errors: [
-          {
-            field: "username",
-            message: "username doesn't exists!",
-          },
-        ],
-      };
-    }
-
-    if (options.password.length <= 2) {
+    if (password.length <= 2) {
       return {
         errors: [
           {
@@ -174,7 +161,18 @@ export class UserResolver {
       };
     }
 
-    const valid = await argon2.verify(user.password, options.password);
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "usernameOrEmail",
+            message: "that username or Email doesn't exist",
+          },
+        ],
+      };
+    }
+
+    const valid = await argon2.verify(user.password, password);
 
     if (!valid) {
       return {
