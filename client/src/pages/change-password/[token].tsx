@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NextPage } from "next";
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button, Flex, Link } from "@chakra-ui/core";
 import { Formik, Form } from "formik";
 import InputField from "../../components/InputField";
 import Wrapper from "../../components/Wrapper";
@@ -9,6 +9,7 @@ import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useChangePasswordMutation } from "../../generated/graphql";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
 
 const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
   const router = useRouter();
@@ -42,7 +43,16 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
               label="New Password"
               type="password"
             />
-            {tokenError ? <Box color="Red">{tokenError}</Box> : null}
+            {tokenError ? (
+              <Flex>
+                <Box mr={2} color="Red">
+                  {tokenError}
+                </Box>
+                <NextLink href="/forgot-password">
+                  <Link>Go get new token</Link>
+                </NextLink>
+              </Flex>
+            ) : null}
             <Box mt={4}>
               <Button
                 type="submit"
