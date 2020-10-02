@@ -4,7 +4,7 @@ import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 
-const Navbar = () => {
+const Navbar: React.FC<{}> = ({}) => {
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
@@ -12,6 +12,7 @@ const Navbar = () => {
 
   let body = null;
   if (fetching) {
+    console.log("fetching.....");
   } else if (!data?.me) {
     body = (
       <>
