@@ -140,6 +140,10 @@ export class UserResolver {
     let user;
 
     try {
+      // normal way
+      // User.create({}).save
+
+      // using querybuilder
       const result = await getConnection()
         .createQueryBuilder()
         .insert()
