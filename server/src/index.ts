@@ -21,10 +21,11 @@ const main = async () => {
     database: "dismania",
     username: "ali_dis",
     password: "ali123",
-    logging: false,
+    logging: true,
     synchronize: true,
     entities: [Post, User],
   });
+
   const app = express();
 
   let RedisStore = connectRedis(session);
@@ -52,6 +53,7 @@ const main = async () => {
       resave: false,
     })
   );
+
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [HelloResolver, PostResolver, UserResolver],
