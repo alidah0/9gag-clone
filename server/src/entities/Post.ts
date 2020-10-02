@@ -5,7 +5,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  BaseEntity,, ManyToOne
+  BaseEntity,
+  ManyToOne,
 } from "typeorm";
 import { User } from "./User";
 
@@ -25,7 +26,7 @@ export class Post extends BaseEntity {
   text!: string;
 
   @Field()
-  @Column({type: "int", default: 0 })
+  @Column({ type: "int", default: 0 })
   points!: string;
 
   @Field()
