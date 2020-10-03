@@ -21,7 +21,7 @@ const main = async () => {
     database: "dismania",
     username: "ali_dis",
     password: "ali123",
-    logging: true,
+    logging: false,
     synchronize: true,
     entities: [Post, User],
   });
