@@ -12,7 +12,6 @@ const Navbar: React.FC<{}> = ({}) => {
 
   let body = null;
   if (fetching) {
-    console.log("fetching.....");
   } else if (!data?.me) {
     body = (
       <>
@@ -41,7 +40,7 @@ const Navbar: React.FC<{}> = ({}) => {
   }
 
   return (
-    <Flex p={5} bg="Teal">
+    <Flex zIndex={1} position="sticky" top="0" p={5} bg="Teal">
       <h1>Discuss Mania</h1>
       <Box ml="auto">{body}</Box>
     </Flex>
