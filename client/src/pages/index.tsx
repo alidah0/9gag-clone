@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
@@ -16,10 +16,12 @@ import Layout from "../components/Layout";
 import NextLink from "next/link";
 
 const Index = () => {
+  const [variables, setVariables] = useState({
+    limit: 10,
+    cursor: null as null | string,
+  });
   const [{ data, fetching }] = usePostsQuery({
-    variables: {
-      limit: 10,
-    },
+    variables,
   });
 
   if (!fetching && !data) {
@@ -31,7 +33,7 @@ const Index = () => {
       <Flex align="center" mb={4}>
         <Heading>Discuss Mania</Heading>
         <NextLink href="/create-post">
-          <Button ml="auto" variantColor="blue">
+          <Button leftIcon={"add"} ml="auto" variantColor="blue">
             Create Post
           </Button>
         </NextLink>
@@ -52,7 +54,17 @@ const Index = () => {
       )}
       <Flex>
         {data ? (
-          <Button isLoading={fetching} m="auto" my={8}>
+          <Button
+            onClick={() => {
+              setVariables({
+                limit: variables.limit,
+                cursor: data.posts[data.posts.length - 1].createdAt,
+              });
+            }}
+            isLoading={fetching}
+            m="auto"
+            my={8}
+          >
             Load More
           </Button>
         ) : null}
