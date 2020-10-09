@@ -43,19 +43,19 @@ const Index = () => {
       ) : !fetching && !data ? (
         <div>Something went wrong!, Query failed!!</div>
       ) : (
-        <Stack spacing={8}>
-          {data?.posts.posts.map((p) => (
-            <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
-              <UpdootSection post={p} />
-              <Box>
-                <Heading fontSize="xl">{p.title}</Heading>
-                <Text>posted by {p.creator.username}</Text>
-                <Text mt={4}>{p.textSnippet}</Text>
-              </Box>
-            </Flex>
-          ))}
-        </Stack>
-      )}
+            <Stack spacing={8}>
+              {data?.posts.posts.map((p) => (
+                <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
+                  <UpdootSection post={p} />
+                  <Box>
+                    <Heading fontSize="xl">{p.title}</Heading>
+                    <Text>posted by {p.creator.username}</Text>
+                    <Text mt={4}>{p.textSnippet}</Text>
+                  </Box>
+                </Flex>
+              ))}
+            </Stack>
+          )}
       <Flex>
         {data && data.posts.hasMore ? (
           <Button
@@ -77,4 +77,4 @@ const Index = () => {
   );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: false })(Index);
+export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
