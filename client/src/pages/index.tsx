@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import NavBar from "../components/NavBar";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { usePostsQuery } from "../generated/graphql";
@@ -11,7 +10,7 @@ import {
   Button,
   Flex,
   Spinner,
-  IconButton,
+  Link,
 } from "@chakra-ui/core";
 import Layout from "../components/Layout";
 import NextLink from "next/link";
@@ -28,14 +27,7 @@ const Index = () => {
 
   return (
     <Layout>
-      <Flex align="center" mb={4}>
-        <Heading>Discuss Mania</Heading>
-        <NextLink href="/create-post">
-          <Button leftIcon={"add"} ml="auto" variantColor="blue">
-            Create Post
-          </Button>
-        </NextLink>
-      </Flex>
+
       {!data && fetching ? (
         <div>
           <Spinner />
@@ -48,7 +40,11 @@ const Index = () => {
                 <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
                   <UpdootSection post={p} />
                   <Box>
-                    <Heading fontSize="xl">{p.title}</Heading>
+                    <NextLink href="/post/[id]" as={`/post/${p.id}`} >
+                      <Link>
+                        <Heading fontSize="xl">{p.title}</Heading>
+                      </Link>
+                    </NextLink>
                     <Text>posted by {p.creator.username}</Text>
                     <Text mt={4}>{p.textSnippet}</Text>
                   </Box>
