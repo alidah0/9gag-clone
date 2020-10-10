@@ -3,9 +3,8 @@ import React from "react";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
-import { link } from "fs";
 
-const Navbar: React.FC<{}> = ({ }) => {
+const Navbar: React.FC<{}> = ({}) => {
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
@@ -29,11 +28,8 @@ const Navbar: React.FC<{}> = ({ }) => {
       <Flex align="center">
         <NextLink href="/create-post">
           <Button as={Link} mr={4}>
-            <Link mr="2">
-              Create Post
-          </Link>
+            <Link mr="2">Create Post</Link>
           </Button>
-
         </NextLink>
         <Box mr="3">{data.me.username}</Box>
         <Button
@@ -49,7 +45,14 @@ const Navbar: React.FC<{}> = ({ }) => {
   }
 
   return (
-    <Flex zIndex={1} position="sticky" top="0" p={5} alignItems="center" bg="Teal">
+    <Flex
+      zIndex={1}
+      position="sticky"
+      top="0"
+      p={5}
+      alignItems="center"
+      bg="Teal"
+    >
       <Flex flex={1} m="auto" maxW={800} align="center">
         <NextLink href="/">
           <Link>
