@@ -74,7 +74,7 @@ const EditPost: React.FC<{}> = ({}) => {
                 variantColor="teal"
                 isLoading={isSubmitting}
               >
-                Create Post
+                Update Post
               </Button>
             </Box>
           </Form>
