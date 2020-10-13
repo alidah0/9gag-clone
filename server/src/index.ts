@@ -17,6 +17,7 @@ import cors from "cors";
 import { join } from "path";
 import { Updoot } from "./entities/Updoots";
 import { createUserLoader } from "./utils/createUserLoader";
+import { createUpdootLoader } from "./utils/createUpdootLoader";
 
 const main = async () => {
   const conn = await createConnection({
@@ -24,7 +25,7 @@ const main = async () => {
     database: "dismania",
     username: "ali_dis",
     password: "ali123",
-    logging: true,
+    logging: false,
     synchronize: true,
     migrations: [join(__dirname + "/migrations/*")],
     entities: [Post, User, Updoot],
@@ -70,6 +71,7 @@ const main = async () => {
       res,
       redis,
       userLoader: createUserLoader(),
+      updootLoader: createUpdootLoader(),
     }),
   });
   apolloServer.applyMiddleware({

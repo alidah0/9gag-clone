@@ -22,7 +22,7 @@ const Index = () => {
     limit: 15,
     cursor: null as null | string,
   });
-  const [{ data, fetching }] = usePostsQuery({
+  const [{ data, fetching, error }] = usePostsQuery({
     variables,
   });
 
@@ -32,8 +32,11 @@ const Index = () => {
         <div>
           <Spinner />
         </div>
-      ) : !fetching && !data ? (
-        <div>Something went wrong!, Query failed!!</div>
+      ) : !fetching && !data && error ? (
+        <>
+          <div>Something went wrong!, Query failed!!</div>
+          <div>{error.message}</div>
+        </>
       ) : (
         <Stack spacing={8}>
           {data?.posts.posts.map((p) =>
