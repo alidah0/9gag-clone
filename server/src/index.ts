@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv-safe/config";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
@@ -22,9 +23,7 @@ import { createUpdootLoader } from "./utils/createUpdootLoader";
 const main = async () => {
   const conn = await createConnection({
     type: "postgres",
-    database: "dismania",
-    username: "ali_dis",
-    password: "ali123",
+    url: process.env.DATABASE_URL,
     logging: false,
     synchronize: true,
     migrations: [join(__dirname + "/migrations/*")],
@@ -36,7 +35,7 @@ const main = async () => {
   const app = express();
 
   let RedisStore = connectRedis(session);
-  let redis = new Redis();
+  let redis = new Redis(process.env.REDIS_URL);
 
   app.use(
     cors({
@@ -79,7 +78,7 @@ const main = async () => {
     cors: false,
   });
 
-  app.listen(4000, () => {
+  app.listen(process.env.PORT || 4000, () => {
     console.log("server started on localhost:4000");
   });
 };
