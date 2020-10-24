@@ -4,12 +4,15 @@
   "description": "social news aggregation, content rating, and discussion App. Registered members submit content to the site such as links, text posts, and images, which are then voted up or down by other members also open a private real-time chat with other members",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
     "watch": "tsc -watch",
     "dev": "nodemon dist/index.js",
     "start": "node dist/index.js",
     "start2": "ts-node src/index.ts",
     "killall": "pkill -9 node",
-    "create:migration": "npx typeorm migration:create -n FakePosts -d src/migrations"
+    "create:migration": "npx typeorm migration:create -n Fakedata -d src/migrations",
+    "generate:migration": "npx typeorm migration:generate -n Initial",
+    "gen-env": "gen-env-types .env -o src/env.d.ts -e ."
   },
   "repository": {
     "type": "git",
@@ -32,6 +35,7 @@
     "@types/nodemailer": "^6.4.0",
     "@types/redis": "^2.8.27",
     "@types/uuid": "^8.3.0",
+    "gen-env-types": "^1.0.4",
     "nodemon": "^2.0.4",
     "typescript": "^4.0.3"
   },

@@ -11,9 +11,9 @@ import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { UserResolver } from "./resolvers/user";
 
-import Redis from "ioredis";
+// import Redis from "ioredis";
 import session from "express-session";
-import connectRedis from "connect-redis";
+// import connectRedis from "connect-redis";
 import cors from "cors";
 import { join } from "path";
 import { Updoot } from "./entities/Updoots";
@@ -24,8 +24,8 @@ const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     url: process.env.DATABASE_URL,
-    logging: false,
-    synchronize: true,
+    logging: true,
+    // synchronize: true,
     migrations: [join(__dirname + "/migrations/*")],
     entities: [Post, User, Updoot],
   });
@@ -34,12 +34,13 @@ const main = async () => {
 
   const app = express();
 
-  let RedisStore = connectRedis(session);
-  let redis = new Redis(process.env.REDIS_URL);
+  // const RedisStore = connectRedis(session);
+  // const redis = new Redis(process.env.REDIS_URL);
+  app.set("trust proxy", 1);
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: process.env.CORS_ORIGIN,
       credentials: true,
     })
   );
@@ -47,7 +48,7 @@ const main = async () => {
   app.use(
     session({
       name: COOKIE_NAME,
-      store: new RedisStore({ client: redis, disableTouch: true }),
+      // store: new RedisStore({ client: redis, disableTouch: true }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,
@@ -55,7 +56,7 @@ const main = async () => {
         sameSite: "lax",
       },
       saveUninitialized: false,
-      secret: "asdasdsadqodko",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
@@ -68,14 +69,18 @@ const main = async () => {
     context: ({ req, res }) => ({
       req,
       res,
-      redis,
       userLoader: createUserLoader(),
       updootLoader: createUpdootLoader(),
     }),
   });
+
   apolloServer.applyMiddleware({
     app,
     cors: false,
+  });
+
+  app.get("*", (_, res) => {
+    res.sendFile(join(__dirname, "..", "client", "build", "index.html"));
   });
 
   app.listen(process.env.PORT || 4000, () => {

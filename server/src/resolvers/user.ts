@@ -50,7 +50,7 @@ export class UserResolver {
   async changePassword(
     @Arg("token") token: string,
     @Arg("newPassword") newPassword: string,
-    @Ctx() { redis, req }: MyContext
+    @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     if (newPassword.length <= 2) {
       return {
@@ -62,12 +62,13 @@ export class UserResolver {
         ],
       };
     }
+    // Redis configurations
+    // const key = FORGET_PASSWORD_PREFIX + token;
+    // const userId = await redis.get(key);
 
-    const key = FORGET_PASSWORD_PREFIX + token;
+    const userId = FORGET_PASSWORD_PREFIX + token;
 
-    const userId = await redis.get(key);
-
-    if (!userId) {
+    if (userId !== req.session.key) {
       return {
         errors: [
           {
@@ -78,7 +79,7 @@ export class UserResolver {
       };
     }
 
-    const user = await User.findOne({ id: parseInt(userId) });
+    const user = await User.findOne({ id: req.session.userId });
 
     if (!user) {
       return {
@@ -95,7 +96,10 @@ export class UserResolver {
 
     await User.update({ id: user.id }, { password: user.password });
 
-    redis.del(key);
+    req.session.key = "";
+
+    // Redis configurations
+    // redis.del(key);
 
     req.session.userId = user.id;
 
@@ -103,25 +107,26 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async forgotPassword(
-    @Arg("email") email: string,
-    @Ctx() { redis }: MyContext
-  ) {
+  async forgotPassword(@Arg("email") email: string, @Ctx() { req }: MyContext) {
     const user = await User.findOne({ email: email });
     if (!user) {
       // email is not existed in the DB
       return true;
     }
     const token = v4();
-    await redis.set(
-      FORGET_PASSWORD_PREFIX + token,
-      user.id,
-      "ex",
-      1000 * 60 * 60 * 24 * 3
-    );
+    req.session.key = FORGET_PASSWORD_PREFIX + token;
+    req.session.userId = user.id;
+
+    // await redis.set(
+    //   FORGET_PASSWORD_PREFIX + token,
+    //   user.id,
+    //   "ex",
+    //   1000 * 60 * 60 * 24 * 3
+    // );
+
     await sendEmail(
       email,
-      `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`
+      `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset Password</a>`
     );
     return true;
   }
