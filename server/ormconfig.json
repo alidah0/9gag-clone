@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "ali_dis",
+  "password": "ali123",
+  "database": "dmdb",
+  "entities": ["dist/entities/*.js"],
+  "migrations" : ["dist/migrations/*.js"]
+}
