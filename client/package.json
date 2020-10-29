@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "gen": "graphql-codegen --config codegen.yml",
-    "deply" : "./home/ali/Desktop/Discuss-Mania/client/deploy.sh"
+    "deploy" : "bash /home/ali/Desktop/Discuss-Mania/client/deploy.sh"
   },
   "dependencies": {
     "@chakra-ui/core": "^0.5.2",
