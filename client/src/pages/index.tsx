@@ -15,7 +15,6 @@ import {
 import Layout from "../components/Layout";
 import NextLink from "next/link";
 import { UpdootSection } from "../components/UpdootSection";
-import { EditDeletePostButton } from "../components/EditDeletePostButtons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -45,7 +44,6 @@ const Index = () => {
           {data?.posts.posts.map((p) =>
             !p ? null : (
               <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
-                <UpdootSection post={p} />
                 <Box flex={1}>
                   <NextLink href="/post/[id]" as={`/post/${p.id}`}>
                     <Link>
@@ -53,11 +51,16 @@ const Index = () => {
                     </Link>
                   </NextLink>
                   <Text>posted by {p.creator.username}</Text>
-                  <Flex align="center">
+                  <Flex direction="column">
+                    {/* <img
+                      width="400"
+                      src="https://i.imgflip.com/11m1m6.jpg"
+                      alt="meme"
+                    /> */}
+                    <UpdootSection post={p} />
                     <Text flex={1} mt={4}>
                       {p.textSnippet}
                     </Text>
-                    <EditDeletePostButton id={p.id} creatorId={p.creator.id} />
                   </Flex>
                 </Box>
               </Flex>
