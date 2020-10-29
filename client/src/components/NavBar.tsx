@@ -61,7 +61,7 @@ const Navbar: React.FC<{}> = ({}) => {
       <Flex flex={1} m="auto" maxW={800} align="center">
         <NextLink href="/">
           <Link>
-            <Heading>Discuss Mania</Heading>
+            <Heading>9Gags Clone</Heading>
           </Link>
         </NextLink>
         <Box ml="auto">{body}</Box>

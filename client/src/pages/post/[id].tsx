@@ -43,6 +43,9 @@ const Post = ({}) => {
 
   return (
     <Layout>
+      <head>
+        <title>{data.post.title}</title>
+      </head>
       <Heading mb={4}>{data.post.title}</Heading>
       <Box mb={4}>{data.post.text}</Box>
       <EditDeletePostButton

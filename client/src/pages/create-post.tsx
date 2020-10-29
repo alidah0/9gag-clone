@@ -15,6 +15,9 @@ const Login: React.FC<{}> = ({}) => {
   const [, createPost] = useCreatePostMutation();
   return (
     <Layout variant="small">
+      <head>
+        <title>Create new post</title>
+      </head>
       <Formik
         initialValues={{ title: "", text: "" }}
         onSubmit={async (values) => {
