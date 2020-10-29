@@ -13,7 +13,7 @@
     "create:migration": "npx typeorm migration:create -n Fakedata -d src/migrations",
     "generate:migration": "npx typeorm migration:generate -n Initial",
     "gen-env": "gen-env-types .env -o src/env.d.ts -e .",
-    "deploy" : "./home/ali/Desktop/Discuss-Mania/server/deploy.sh"
+    "deploy" : "bash /home/ali/Desktop/Discuss-Mania/server/deploy.sh"
   },
   "repository": {
     "type": "git",
