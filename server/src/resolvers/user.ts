@@ -50,7 +50,7 @@ export class UserResolver {
   async changePassword(
     @Arg("token") token: string,
     @Arg("newPassword") newPassword: string,
-    @Ctx() { req }: MyContext
+    @Ctx() { redis, req }: MyContext
   ): Promise<UserResponse> {
     if (newPassword.length <= 2) {
       return {
@@ -62,13 +62,12 @@ export class UserResolver {
         ],
       };
     }
-    // Redis configurations
-    // const key = FORGET_PASSWORD_PREFIX + token;
-    // const userId = await redis.get(key);
 
-    const userId = FORGET_PASSWORD_PREFIX + token;
+    const key = FORGET_PASSWORD_PREFIX + token;
 
-    if (userId !== req.session.key) {
+    const userId = await redis.get(key);
+
+    if (!userId) {
       return {
         errors: [
           {
@@ -79,7 +78,7 @@ export class UserResolver {
       };
     }
 
-    const user = await User.findOne({ id: req.session.userId });
+    const user = await User.findOne({ id: parseInt(userId) });
 
     if (!user) {
       return {
@@ -96,10 +95,7 @@ export class UserResolver {
 
     await User.update({ id: user.id }, { password: user.password });
 
-    req.session.key = "";
-
-    // Redis configurations
-    // redis.del(key);
+    redis.del(key);
 
     req.session.userId = user.id;
 
@@ -107,22 +103,24 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async forgotPassword(@Arg("email") email: string, @Ctx() { req }: MyContext) {
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { redis }: MyContext
+  ) {
     const user = await User.findOne({ email: email });
+
     if (!user) {
       // email is not existed in the DB
       return true;
     }
     const token = v4();
-    req.session.key = FORGET_PASSWORD_PREFIX + token;
-    req.session.userId = user.id;
 
-    // await redis.set(
-    //   FORGET_PASSWORD_PREFIX + token,
-    //   user.id,
-    //   "ex",
-    //   1000 * 60 * 60 * 24 * 3
-    // );
+    await redis.set(
+      FORGET_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24 * 3
+    );
 
     await sendEmail(
       email,
