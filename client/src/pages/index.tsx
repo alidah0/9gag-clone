@@ -28,6 +28,9 @@ const Index = () => {
 
   return (
     <Layout>
+      <head>
+        <title>9Gags Clone</title>
+      </head>
       {!data && fetching ? (
         <div>
           <Spinner />

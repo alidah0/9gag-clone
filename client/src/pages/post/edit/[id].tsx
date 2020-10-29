@@ -47,6 +47,9 @@ const EditPost: React.FC<{}> = ({}) => {
   }
   return (
     <Layout variant="small">
+      <head>
+        <title>Edit post</title>
+      </head>
       <Formik
         initialValues={{ title: data.post.title, text: data.post.text }}
         onSubmit={async (values) => {
