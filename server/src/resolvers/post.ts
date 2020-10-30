@@ -25,6 +25,8 @@ class PostInput {
   title: string;
   @Field()
   text: string;
+  @Field()
+  memePic: string;
 }
 
 @ObjectType()
@@ -165,6 +167,7 @@ export class PostResolver {
     @Arg("input") input: PostInput,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
+    console.log(input);
     return Post.create({
       ...input,
       creatorId: req.session.userId,
@@ -177,12 +180,13 @@ export class PostResolver {
     @Arg("id", () => Int) id: number,
     @Arg("title") title: string,
     @Arg("text") text: string,
+    @Arg("memePic") memePic: string,
     @Ctx() { req }: MyContext
   ): Promise<Post | null> {
     const result = await getConnection()
       .createQueryBuilder()
       .update(Post)
-      .set({ title, text })
+      .set({ title, text, memePic })
       .where('id = :id and "creatorId" = :creatorId', {
         id,
         creatorId: req.session.userId,
