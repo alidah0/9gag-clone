@@ -7,6 +7,7 @@ import InputField from "../components/InputField";
 import Layout from "../components/Layout";
 import { useCreatePostMutation } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import { imgUrlValidate } from "../utils/imgUrlValidate";
 import { useIsAuth } from "../utils/useIsAuth";
 
 const Login: React.FC<{}> = ({}) => {
@@ -19,9 +20,12 @@ const Login: React.FC<{}> = ({}) => {
         <title>Create new post</title>
       </head>
       <Formik
-        initialValues={{ title: "", text: "" }}
-        onSubmit={async (values) => {
+        initialValues={{ title: "", text: "", memePic: "" }}
+        onSubmit={async (values, { setErrors }) => {
           const { error } = await createPost({ input: values });
+          if (!imgUrlValidate(values.memePic)) {
+            setErrors({ memePic: "Meme Picture URL is not valid!" });
+          }
           if (!error) {
             router.push("/");
           }
@@ -30,6 +34,14 @@ const Login: React.FC<{}> = ({}) => {
         {({ isSubmitting }) => (
           <Form>
             <InputField name="title" placeholder="Title..." label="Title" />
+            <Box mt={4}>
+              <InputField
+                name="memePic"
+                placeholder="Meme Picture..."
+                label="Meme Picture"
+              />
+            </Box>
+
             <Box mt={4}>
               <InputField
                 textarea

@@ -167,7 +167,6 @@ export class PostResolver {
     @Arg("input") input: PostInput,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
-    console.log(input);
     return Post.create({
       ...input,
       creatorId: req.session.userId,

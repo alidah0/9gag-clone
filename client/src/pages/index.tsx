@@ -11,6 +11,7 @@ import {
   Flex,
   Spinner,
   Link,
+  Image,
 } from "@chakra-ui/core";
 import Layout from "../components/Layout";
 import NextLink from "next/link";
@@ -52,11 +53,7 @@ const Index = () => {
                   </NextLink>
                   <Text>posted by {p.creator.username}</Text>
                   <Flex direction="column">
-                    {/* <img
-                      width="400"
-                      src="https://i.imgflip.com/11m1m6.jpg"
-                      alt="meme"
-                    /> */}
+                    <Image w="500px" src={p.memePic} alt="meme" />
                     <UpdootSection post={p} />
                     <Text flex={1} mt={4}>
                       {p.textSnippet}

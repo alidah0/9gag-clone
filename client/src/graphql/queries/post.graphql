@@ -6,6 +6,7 @@ query Post($id: Int!) {
     createdAt
     updatedAt
     text
+    memePic
     voteStatus
     creator {
       id

@@ -41,6 +41,7 @@ export type Post = {
   __typename?: 'Post';
   id: Scalars['Float'];
   title: Scalars['String'];
+  memePic: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Float'];
   voteStatus?: Maybe<Scalars['Int']>;
@@ -86,6 +87,7 @@ export type MutationCreatePostArgs = {
 
 
 export type MutationUpdatePostArgs = {
+  memePic: Scalars['String'];
   text: Scalars['String'];
   title: Scalars['String'];
   id: Scalars['Int'];
@@ -121,6 +123,7 @@ export type MutationLoginArgs = {
 export type PostInput = {
   title: Scalars['String'];
   text: Scalars['String'];
+  memePic: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -143,7 +146,7 @@ export type UsernamePasswordInput = {
 
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'points' | 'createdAt' | 'updatedAt' | 'textSnippet' | 'voteStatus'>
+  & Pick<Post, 'id' | 'title' | 'memePic' | 'points' | 'createdAt' | 'updatedAt' | 'textSnippet' | 'voteStatus'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -257,6 +260,7 @@ export type UpdatePostMutationVariables = Exact<{
   id: Scalars['Int'];
   title: Scalars['String'];
   text: Scalars['String'];
+  memePic: Scalars['String'];
 }>;
 
 
@@ -264,7 +268,7 @@ export type UpdatePostMutation = (
   { __typename?: 'Mutation' }
   & { updatePost?: Maybe<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'text' | 'textSnippet'>
+    & Pick<Post, 'id' | 'title' | 'text' | 'textSnippet' | 'memePic'>
   )> }
 );
 
@@ -299,7 +303,7 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post?: Maybe<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'title' | 'points' | 'createdAt' | 'updatedAt' | 'text' | 'voteStatus'>
+    & Pick<Post, 'id' | 'title' | 'points' | 'createdAt' | 'updatedAt' | 'text' | 'memePic' | 'voteStatus'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
@@ -329,6 +333,7 @@ export const PostSnippetFragmentDoc = gql`
     fragment PostSnippet on Post {
   id
   title
+  memePic
   points
   createdAt
   updatedAt
@@ -440,12 +445,13 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
 };
 export const UpdatePostDocument = gql`
-    mutation UpdatePost($id: Int!, $title: String!, $text: String!) {
-  updatePost(id: $id, title: $title, text: $text) {
+    mutation UpdatePost($id: Int!, $title: String!, $text: String!, $memePic: String!) {
+  updatePost(id: $id, title: $title, text: $text, memePic: $memePic) {
     id
     title
     text
     textSnippet
+    memePic
   }
 }
     `;
@@ -482,6 +488,7 @@ export const PostDocument = gql`
     createdAt
     updatedAt
     text
+    memePic
     voteStatus
     creator {
       id
