@@ -25,6 +25,10 @@ export class Post extends BaseEntity {
 
   @Field()
   @Column()
+  memePic!: string;
+
+  @Field()
+  @Column()
   text!: string;
 
   @Field()

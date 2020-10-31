@@ -1,6 +1,7 @@
 fragment PostSnippet on Post {
   id
   title
+  memePic
   points
   createdAt
   updatedAt

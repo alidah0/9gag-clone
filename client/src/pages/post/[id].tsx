@@ -47,6 +47,9 @@ const Post = ({}) => {
         <title>{data.post.title}</title>
       </head>
       <Heading mb={4}>{data.post.title}</Heading>
+      <Box mb={4}>
+        <img src={data.post.memePic} alt={data.post.title} />
+      </Box>
       <Box mb={4}>{data.post.text}</Box>
       <EditDeletePostButton
         id={data.post.id}
