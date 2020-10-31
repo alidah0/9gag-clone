@@ -11,6 +11,7 @@ import {
 } from "../../../generated/graphql";
 import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { getIntId } from "../../../utils/getIntId";
+import { imgUrlValidate } from "../../../utils/imgUrlValidate";
 
 const EditPost: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -51,10 +52,16 @@ const EditPost: React.FC<{}> = ({}) => {
         <title>Edit post</title>
       </head>
       <Formik
-        initialValues={{ title: data.post.title, text: data.post.text }}
-        onSubmit={async (values) => {
-          console.log({ values });
+        initialValues={{
+          title: data.post.title,
+          memePic: "",
+          text: data.post.text,
+        }}
+        onSubmit={async (values, { setErrors }) => {
           const { error } = await updatePost({ id: intId, ...values });
+          if (!imgUrlValidate(values.memePic)) {
+            setErrors({ memePic: "Meme Picture URL is not valid!" });
+          }
           if (!error) {
             router.back();
           }
@@ -69,6 +76,13 @@ const EditPost: React.FC<{}> = ({}) => {
                 name="text"
                 placeholder="Text..."
                 label="Body"
+              />
+            </Box>
+            <Box mt={4}>
+              <InputField
+                name="memePic"
+                placeholder="Meme Picture..."
+                label="Meme Picture"
               />
             </Box>
             <Box mt={4}>
