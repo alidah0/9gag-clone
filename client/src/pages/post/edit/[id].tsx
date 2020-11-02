@@ -1,6 +1,5 @@
 import { Box, Button, Heading } from "@chakra-ui/core";
 import { Formik, Form } from "formik";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import InputField from "../../../components/InputField";
@@ -9,21 +8,22 @@ import {
   usePostQuery,
   useUpdatePostMutation,
 } from "../../../generated/graphql";
-import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { getIntId } from "../../../utils/getIntId";
 import { imgUrlValidate } from "../../../utils/imgUrlValidate";
+import { withApollo } from "../../../utils/withApollo";
 
 const EditPost: React.FC<{}> = ({}) => {
   const router = useRouter();
   const intId = getIntId();
-  const [{ data, fetching, error }] = usePostQuery({
+  const { data, loading } = usePostQuery({
+    skip: intId === -1,
     variables: {
       id: intId,
     },
   });
 
-  const [_, updatePost] = useUpdatePostMutation();
-  if (fetching) {
+  const [updatePost] = useUpdatePostMutation();
+  if (loading) {
     return (
       <Layout>
         <Box>Loading...</Box>
@@ -31,10 +31,10 @@ const EditPost: React.FC<{}> = ({}) => {
     );
   }
 
-  if (error) {
+  if (!data?.post) {
     return (
       <Layout>
-        <Box>{error}</Box>
+        <Box>Couldn't find a post!</Box>
       </Layout>
     );
   }
@@ -58,11 +58,13 @@ const EditPost: React.FC<{}> = ({}) => {
           text: data.post.text,
         }}
         onSubmit={async (values, { setErrors }) => {
-          const { error } = await updatePost({ id: intId, ...values });
+          const { errors } = await updatePost({
+            variables: { id: intId, ...values },
+          });
           if (!imgUrlValidate(values.memePic)) {
             setErrors({ memePic: "Meme Picture URL is not valid!" });
           }
-          if (!error) {
+          if (!errors) {
             router.back();
           }
         }}
@@ -101,4 +103,4 @@ const EditPost: React.FC<{}> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(EditPost);
+export default withApollo({ ssr: false })(EditPost);
