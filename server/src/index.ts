@@ -63,7 +63,7 @@ const main = async () => {
         httpOnly: true,
         secure: __prod__,
         sameSite: "lax",
-        domain: __prod__ ? ".herokuapp.com" : undefined,
+        domain: __prod__ ? "gags-clone.herokuapp.com" : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,
