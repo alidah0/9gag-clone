@@ -124,7 +124,7 @@ export class UserResolver {
 
     await sendEmail(
       email,
-      `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset Password</a>`
+      `<h1> 9Gag-clone Click here to Reset your password<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset Password</a></h1>`
     );
     return true;
   }

@@ -5,5 +5,6 @@ declare namespace NodeJS {
     SESSION_SECRET: string;
     CORS_ORIGIN: string;
     REDIS_URL: string;
+    SENDGRID_API_KEY: string;
   }
 }
