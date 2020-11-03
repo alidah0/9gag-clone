@@ -1,8 +1,8 @@
-# Discuss Mania(9GAG clone)
+# 9GAG clone
 
 ## App Description
 
-Discuss Mania is full-stack social news aggregation, content rating, and discussion App. Registered members submit content to the site such as links, text posts, and images, which are then voted up or down by other members It's something like 9GAG clone.
+9GAG clone is full-stack social news aggregation and content rating App. Registered members submit content to the site such as links, text posts, and images, which are then voted up or down by other members.
 
 ## Demo Link
 
