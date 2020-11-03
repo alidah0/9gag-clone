@@ -30,6 +30,7 @@ const main = async () => {
     entities: [Post, User, Updoot],
   });
   // await Post.delete({});
+
   await conn.runMigrations();
 
   const app = express();
@@ -62,8 +63,8 @@ const main = async () => {
         maxAge: 1000 * 60 * 60 * 24 * 365,
         httpOnly: true,
         secure: __prod__,
-        sameSite: "lax",
-        domain: __prod__ ? ".herokuapp.com" : undefined,
+        sameSite: "none", // change this to "lax"
+        domain: "",
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET,

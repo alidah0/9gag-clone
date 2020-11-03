@@ -1,4 +1,4 @@
-import { Box, Button, Heading } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/core";
 import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
@@ -10,10 +10,12 @@ import {
 } from "../../../generated/graphql";
 import { getIntId } from "../../../utils/getIntId";
 import { imgUrlValidate } from "../../../utils/imgUrlValidate";
+import { useIsAuth } from "../../../utils/useIsAuth";
 import { withApollo } from "../../../utils/withApollo";
 
 const EditPost: React.FC<{}> = ({}) => {
   const router = useRouter();
+  useIsAuth();
   const intId = getIntId();
   const { data, loading } = usePostQuery({
     skip: intId === -1,
@@ -74,19 +76,20 @@ const EditPost: React.FC<{}> = ({}) => {
             <InputField name="title" placeholder="Title..." label="Title" />
             <Box mt={4}>
               <InputField
+                name="memePic"
+                placeholder="Meme Picture..."
+                label="Meme Picture"
+              />
+            </Box>
+            <Box mt={4}>
+              <InputField
                 textarea
                 name="text"
                 placeholder="Text..."
                 label="Body"
               />
             </Box>
-            <Box mt={4}>
-              <InputField
-                name="memePic"
-                placeholder="Meme Picture..."
-                label="Meme Picture"
-              />
-            </Box>
+
             <Box mt={4}>
               <Button
                 type="submit"

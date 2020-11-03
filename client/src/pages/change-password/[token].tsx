@@ -76,7 +76,7 @@ const ChangePassword: NextPage<{}> = () => {
             <Box mt={4}>
               <Button
                 type="submit"
-                variantColor="teal"
+                variantColor="twitter"
                 isLoading={isSubmitting}
               >
                 Change Password

@@ -67,7 +67,7 @@ const Register: React.FC<{}> = ({}) => {
               <Box mt={4}>
                 <Button
                   type="submit"
-                  variantColor="teal"
+                  variantColor="twitter"
                   isLoading={isSubmitting}
                 >
                   Register

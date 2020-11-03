@@ -71,7 +71,7 @@ const Login: React.FC<{}> = ({}) => {
               <Box mt={4}>
                 <Button
                   type="submit"
-                  variantColor="teal"
+                  variantColor="twitter"
                   isLoading={isSubmitting}
                 >
                   Login
